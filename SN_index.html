@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crew Sign-In · IMCA Super Nationals</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --asphalt:#15130f;
+    --asphalt-2:#1e1b16;
+    --clay:#c4622d;
+    --clay-light:#e2854f;
+    --floodlight:#f4b942;
+    --paper:#f2ede4;
+    --paper-dim:#c9c2b4;
+    --line:#3a352c;
+    --ok:#6fae6a;
+    --err:#d9695a;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--asphalt);
+    color:var(--paper);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .hero{
+    position:relative;
+    padding:56px 24px 40px;
+    text-align:center;
+    background:
+      radial-gradient(circle at 20% -10%, rgba(244,185,66,0.18), transparent 45%),
+      radial-gradient(circle at 80% -10%, rgba(244,185,66,0.12), transparent 45%),
+      linear-gradient(180deg, #1a1712 0%, var(--asphalt) 100%);
+    border-bottom:1px solid var(--line);
+    overflow:hidden;
+  }
+  .hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:0;
+    height:6px;
+    background:repeating-linear-gradient(90deg, var(--paper) 0 18px, var(--asphalt-2) 18px 36px);
+    opacity:0.9;
+  }
+  .eyebrow{
+    font-family:'Oswald',sans-serif;
+    font-weight:600;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--clay-light);
+    font-size:12.5px;
+    margin-bottom:10px;
+  }
+  h1{
+    font-family:'Oswald',sans-serif;
+    font-weight:700;
+    font-size:clamp(28px,6vw,42px);
+    text-transform:uppercase;
+    letter-spacing:0.01em;
+    margin:0 0 8px;
+    line-height:1.05;
+  }
+  .hero p{
+    color:var(--paper-dim);
+    font-size:15px;
+    margin:0 auto;
+    max-width:440px;
+  }
+  .dates{
+    display:inline-flex;
+    gap:14px;
+    margin-top:18px;
+    font-family:'Oswald',sans-serif;
+    font-size:13px;
+    letter-spacing:0.04em;
+  }
+  .dates span{
+    background:var(--asphalt-2);
+    border:1px solid var(--line);
+    padding:6px 12px;
+    border-radius:3px;
+    color:var(--floodlight);
+  }
+  form{
+    max-width:520px;
+    margin:0 auto;
+    padding:32px 20px 80px;
+  }
+  .station{
+    margin-bottom:28px;
+  }
+  .station-label{
+    font-family:'Oswald',sans-serif;
+    font-size:11px;
+    letter-spacing:0.16em;
+    text-transform:uppercase;
+    color:var(--clay-light);
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:14px;
+  }
+  .station-label::after{
+    content:"";
+    flex:1;
+    height:1px;
+    background:var(--line);
+  }
+  .field{
+    margin-bottom:16px;
+  }
+  label{
+    display:block;
+    font-size:13.5px;
+    color:var(--paper-dim);
+    margin-bottom:6px;
+  }
+  input[type=text], input[type=tel], input[type=email], input[type=date], select{
+    width:100%;
+    background:var(--asphalt-2);
+    border:1px solid var(--line);
+    color:var(--paper);
+    padding:12px 14px;
+    border-radius:6px;
+    font-size:15px;
+    font-family:'Inter',sans-serif;
+  }
+  input:focus, select:focus{
+    outline:none;
+    border-color:var(--clay);
+    box-shadow:0 0 0 3px rgba(196,98,45,0.25);
+  }
+  .row2{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+  }
+  .toggle-group{
+    display:flex;
+    gap:10px;
+  }
+  .toggle-group input{display:none;}
+  .toggle-group label{
+    flex:1;
+    text-align:center;
+    padding:11px 10px;
+    border:1px solid var(--line);
+    border-radius:6px;
+    color:var(--paper-dim);
+    cursor:pointer;
+    font-size:14px;
+    margin:0;
+    transition:all .15s ease;
+  }
+  .toggle-group input:checked + label{
+    background:var(--clay);
+    border-color:var(--clay);
+    color:#fff;
+    font-weight:600;
+  }
+  select{appearance:none; background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23c9c2b4'><path d='M4 6l4 4 4-4' stroke='%23c9c2b4' stroke-width='1.5' fill='none'/></svg>"); background-repeat:no-repeat; background-position:right 14px center;}
+  .hint{font-size:12px; color:#8a8477; margin-top:5px;}
+  button{
+    width:100%;
+    padding:16px;
+    background:var(--clay);
+    color:#fff;
+    border:none;
+    border-radius:8px;
+    font-family:'Oswald',sans-serif;
+    font-size:15px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    font-weight:600;
+    cursor:pointer;
+    transition:background .15s ease, transform .1s ease;
+    margin-top:8px;
+  }
+  button:hover{background:var(--clay-light);}
+  button:active{transform:scale(0.99);}
+  button:disabled{opacity:0.6; cursor:not-allowed;}
+  #status{
+    text-align:center;
+    margin-top:16px;
+    font-size:14px;
+    min-height:20px;
+  }
+  #status.ok{color:var(--ok);}
+  #status.err{color:var(--err);}
+  .success-screen{
+    max-width:480px;
+    margin:60px auto;
+    text-align:center;
+    padding:0 24px;
+    display:none;
+  }
+  .success-screen.show{display:block;}
+  .success-screen .flag{
+    font-size:44px;
+    margin-bottom:14px;
+  }
+  .success-screen h2{
+    font-family:'Oswald',sans-serif;
+    text-transform:uppercase;
+    font-size:24px;
+    margin:0 0 8px;
+  }
+  .success-screen p{color:var(--paper-dim); font-size:14.5px;}
+  @media (max-width:420px){
+    .row2{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="eyebrow">Crew Sign-In</div>
+  <h1>IMCA Super Nationals</h1>
+  <p>Quick form so we can plan lodging, meals, and logistics for the whole crew.</p>
+  <div class="dates">
+    <span>Setup Aug 31&ndash;Sep 4</span>
+    <span>Event Sep 5&ndash;12</span>
+  </div>
+</div>
+
+<form id="crewForm">
+
+  <div class="station">
+    <div class="station-label">Who you are</div>
+    <div class="field">
+      <label for="firstName">First name</label>
+      <input type="text" id="firstName" name="firstName" required autocomplete="given-name">
+    </div>
+    <div class="field">
+      <label for="lastName">Last name</label>
+      <input type="text" id="lastName" name="lastName" required autocomplete="family-name">
+      <div class="hint">Legal/full name please — no nicknames, this goes on official rosters.</div>
+    </div>
+    <div class="row2">
+      <div class="field">
+        <label for="phone">Phone number</label>
+        <input type="tel" id="phone" name="phone" required autocomplete="tel">
+      </div>
+      <div class="field">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required autocomplete="email">
+      </div>
+    </div>
+  </div>
+
+  <div class="station">
+    <div class="station-label">Logistics</div>
+    <div class="field">
+      <label>Need lodging?</label>
+      <div class="toggle-group">
+        <input type="radio" id="lodgeYes" name="lodging" value="Yes" required>
+        <label for="lodgeYes">Yes</label>
+        <input type="radio" id="lodgeNo" name="lodging" value="No">
+        <label for="lodgeNo">No</label>
+      </div>
+    </div>
+    <div class="row2">
+      <div class="field">
+        <label for="arrival">Planned arrival day</label>
+        <input type="date" id="arrival" name="arrival" required>
+      </div>
+      <div class="field">
+        <label for="departure">Planned departure day</label>
+        <input type="date" id="departure" name="departure" required>
+      </div>
+    </div>
+    <div class="field">
+      <label>Bringing a vehicle?</label>
+      <div class="toggle-group">
+        <input type="radio" id="vehYes" name="vehicle" value="Yes" required>
+        <label for="vehYes">Yes</label>
+        <input type="radio" id="vehNo" name="vehicle" value="No">
+        <label for="vehNo">No</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="station">
+    <div class="station-label">Gear</div>
+    <div class="field">
+      <label for="shirt">Shirt size</label>
+      <select id="shirt" name="shirtSize" required>
+        <option value="" disabled selected>Select size</option>
+        <option>XS</option><option>S</option><option>M</option><option>L</option>
+        <option>XL</option><option>2XL</option><option>3XL</option><option>4XL</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="station">
+    <div class="station-label">Just for fun</div>
+    <div class="field">
+      <label for="favNumber">Favorite number</label>
+      <input type="text" id="favNumber" name="favoriteNumber" inputmode="numeric" pattern="[0-9]{1,3}" maxlength="3" placeholder="e.g. 24" required>
+      <div class="hint">2–3 digits, numbers only.</div>
+    </div>
+    <div class="field">
+      <label for="favColor">Favorite color</label>
+      <input type="text" id="favColor" name="favoriteColor" required>
+    </div>
+    <div class="field">
+      <label for="favFood">Favorite food (a meal)</label>
+      <input type="text" id="favFood" name="favoriteFood" required>
+    </div>
+    <div class="field">
+      <label for="favSweet">Favorite sweet treat</label>
+      <input type="text" id="favSweet" name="favoriteSweet" required>
+    </div>
+  </div>
+
+  <div class="station">
+    <div class="station-label">In case of emergency</div>
+    <div class="row2">
+      <div class="field">
+        <label for="ecName">Emergency contact name</label>
+        <input type="text" id="ecName" name="emergencyName" required>
+      </div>
+      <div class="field">
+        <label for="ecPhone">Emergency contact phone</label>
+        <input type="tel" id="ecPhone" name="emergencyPhone" required>
+      </div>
+    </div>
+  </div>
+
+  <button type="submit" id="submitBtn">Submit</button>
+  <div id="status"></div>
+</form>
+
+<div class="success-screen" id="successScreen">
+  <div class="flag">🏁</div>
+  <h2>You're on the list</h2>
+  <p>Thanks — your info's in. See you at the track.</p>
+</div>
+
+<script>
+  // Paste your Google Apps Script Web App URL here (see setup instructions).
+  const SCRIPT_URL = "PASTE_YOUR_APPS_SCRIPT_URL_HERE";
+
+  const form = document.getElementById('crewForm');
+  const status = document.getElementById('status');
+  const btn = document.getElementById('submitBtn');
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+
+    if (SCRIPT_URL.indexOf('PASTE_YOUR') === 0) {
+      status.textContent = "Setup needed: add your Apps Script URL in the code.";
+      status.className = "err";
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = "Submitting...";
+    status.textContent = "";
+    status.className = "";
+
+    const data = new FormData(form);
+
+    fetch(SCRIPT_URL, {
+      method: "POST",
+      mode: "no-cors",
+      body: data
+    })
+    .then(function(){
+      form.style.display = "none";
+      document.getElementById('successScreen').classList.add('show');
+    })
+    .catch(function(err){
+      status.textContent = "Something went wrong. Please try again.";
+      status.className = "err";
+      btn.disabled = false;
+      btn.textContent = "Submit";
+    });
+  });
+</script>
+
+</body>
+</html>
